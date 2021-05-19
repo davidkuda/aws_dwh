@@ -1,0 +1,45 @@
+Table songplays {
+	songplay_id INTEGER
+	start_time TIMESTAMP
+	user_id INTEGER
+	level VARCHAR(20)
+	song_id INTEGER
+	artist_id INTEGER
+	session_id INTEGER
+	location VARCHAR(50)
+	user_agent VARCHAR
+}
+
+Table users {
+	user_id INTEGER
+	first_name VARCHAR
+	last_name VARCHAR
+	gender VARCHAR(20)
+	level VARCHAR(20)
+}
+
+Table songs {
+	song_id INTEGER
+	title VARCHAR
+	artist_id INTEGER
+	year SMALLINT
+	duration SMALLINT
+}
+
+Table artists {
+	artist_id INTEGER
+	name VARCHAR
+	location VARCHAR
+	latitude DECIMAL
+	longitude DECIMAL
+}
+
+Table time {
+	start_time TIMESTAMP
+	hour SMALLINT
+	day SMALLINT
+	week SMALLINT
+	month SMALLINT
+	year SMALLINT
+	weekday SMALLINT
+}
