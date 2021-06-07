@@ -43,3 +43,35 @@ CREATE TABLE IF NOT EXISTS time (
 	year SMALLINT NOT NULL,
 	weekday SMALLINT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS "staging_log_data" (
+    "artist" TEXT,
+    "auth" VARCHAR(12) NOT NULL,
+    "firstName" TEXT NOT NULL,
+    "gender" TEXT NOT NULL,
+    "itemInSession" INTEGER NOT NULL,
+    "length" DECIMAL,
+    "level" VARCHAR(12) NOT NULL,
+    "location" TEXT NOT NULL,
+    "method" VARCHAR(7) NOT NULL,
+    "page" TEXT,
+    "registration" VARCHAR(12),
+    "sessionId" INTEGER NOT NULL,
+    "song" TEXT,
+    "status" SMALLINT NOT NULL,
+    "timestamp" BIGINT NOT NULL,
+    "userAgent" TEXT NOT NULL,
+    "userId" INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS "staging_song_data" (
+    "artist_id" VARCHAR NOT NULL,
+    "artist_latitude" DECIMAL,
+    "artist_longitude" DECIMAL,
+    "artist_name" VARCHAR,
+    "duration" DECIMAL,
+    "num_songs" INTEGER,
+    "song_id" VARCHAR,
+    "title" VARCHAR,
+    "year" INTEGER
+);
