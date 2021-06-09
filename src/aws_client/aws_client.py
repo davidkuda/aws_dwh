@@ -120,16 +120,35 @@ def main():
               region=configs.get('REGION'),
               config_params=configs)
 
+    # Create iam role
+    # aws.create_iam_role()
+
+    # Get ARN of that role
+    role_arn = aws.get_iam_role_arn()
+
     # Create the Redshift Cluster and wait until available
-    # create_infrastructure(aws)
+    aws.create_redshift_cluster(role_arn)
 
     # Check for availability
-    redshift_cluster_props = get_redshift_cluster_props()[0]
-    check_redshift_status(aws, redshift_cluster_props)
-    do_sth(redshift_cluster_props)
+    redshift_cluster_props = aws.get_redshift_cluster_props()
+    aws.print_redshift_props(redshift_cluster_props)
+    print_dwh_endpoint_and_role_arn(redshift_cluster_props)
 
     # After cluster is available: Open tcp port.
-    # open_tcp_port(aws, redshift_cluster_props)
+    # aws.open_tcp_port(redshift_cluster_props)
 
     # Finally, destroy infrastructure.
     # destroy_infrastructure(aws)
+    aws.redshift.delete_cluster(
+        ClusterIdentifier=aws.configs['DWH_CLUSTER_IDENTIFIER'],
+        SkipFinalClusterSnapshot=True)
+
+    aws.iam.detach_role_policy(
+        RoleName=aws.configs['DWH_IAM_ROLE_NAME'],
+        PolicyArn="arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess")
+
+    aws.iam.delete_role(RoleName=aws.configs['DWH_IAM_ROLE_NAME'])
+
+
+if __name__ == '__main__':
+    print('hello')
