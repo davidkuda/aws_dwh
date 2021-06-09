@@ -27,9 +27,11 @@ class AWS:
                  'Effect': 'Allow',
                  'Principal': {'Service': 'redshift.amazonaws.com'}
                  }
-            ]}
+            ],
+            'Version': '2012-10-17'
+        }
 
-        dwh_role = self.iam.create_role(
+        self.iam.create_role(
             Path='/',
             RoleName=self.configs.get('DWH_IAM_ROLE_NAME'),
             Description='Allows Redshift clusters to call AWS services on your behalf.',
@@ -38,8 +40,8 @@ class AWS:
         self.iam.attach_role_policy(
             RoleName=self.configs.get('DWH_IAM_ROLE_NAME'),
             PolicyArn='arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess')
-        # ['ResponseMetadata']['HTTPStatusCode']
 
+    def get_iam_role_arn(self):
         role_arn = self.iam.get_role(
             RoleName=self.configs.get('DWH_IAM_ROLE_NAME')
         )['Role']['Arn']
