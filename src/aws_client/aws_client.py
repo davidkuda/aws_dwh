@@ -49,7 +49,7 @@ class AWS:
         return role_arn
 
     def create_redshift_cluster(self, role_arn):
-        response = self.redshift.create_cluster(
+        self.redshift.create_cluster(
             # HW / hardware
             ClusterType=self.configs.get('DWH_CLUSTER_TYPE'),
             NodeType=self.configs.get('DWH_NODE_TYPE'),
