@@ -65,7 +65,15 @@ class AWS:
             IamRoles=[role_arn]
         )
 
-        print(response)
+    def get_redshift_cluster_props(self):
+        redshift_cluster_props = self.redshift.describe_clusters(
+            ClusterIdentifier=self.configs.get('DWH_CLUSTER_IDENTIFIER')
+        )['Clusters']
+        return redshift_cluster_props[0]
+
+    def print_redshift_props(self, redshift_cluster_props):
+        df = self.get_redshift_props_as_pd_df(redshift_cluster_props)
+        print(df)
 
     @staticmethod
     def get_redshift_props_as_pd_df(redshift_props):
@@ -98,46 +106,12 @@ class AWS:
         self.iam.delete_role(RoleName=self.configs['DWH_IAM_ROLE_NAME'])
 
 
-def get_redshift_cluster_props():
-    redshift_cluster_props = aws.redshift.describe_clusters(
-        ClusterIdentifier=configs.get('DWH_CLUSTER_IDENTIFIER')
-    )['Clusters']
-    return redshift_cluster_props
-
-
-def create_infrastructure(aws: AWS):
-
-    aws.create_iam_role()
-
-    role_arn = aws.iam.get_role(
-        RoleName=configs.get('DWH_IAM_ROLE_NAME')
-    )['Role']['Arn']
-
-    aws.create_redshift_cluster(role_arn)
-
-
-def do_sth(redshift_cluster_props):
-    DWH_ENDPOINT = redshift_cluster_props['Endpoint']['Address']
-    DWH_ROLE_ARN = redshift_cluster_props['IamRoles'][0]['IamRoleArn']
-    print(DWH_ENDPOINT)
-    print(DWH_ROLE_ARN)
-
-
-def open_tcp_port(aws: AWS, redshift_cluster_props) -> None:
-    aws.open_tcp_port(redshift_cluster_props)
-
-
-def check_redshift_status(aws: AWS, redshift_cluster_props):
-    df = aws.get_redshift_props_as_pd_df(redshift_cluster_props)
-    print(df)
-
-
 def destroy_infrastructure(aws: AWS):
     aws.delete_cluster()
     aws.delete_iam_role()
 
 
-if __name__ == '__main__':
+def main():
     configs = parse_configs('../../config/dwh.cfg')
     secrets = get_secrets()
 
