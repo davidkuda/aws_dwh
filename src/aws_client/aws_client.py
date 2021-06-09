@@ -3,7 +3,8 @@ import json
 import boto3
 import pandas as pd
 
-from utils import parse_configs, get_secrets
+# from utils import parse_configs, get_secrets
+from .utils import parse_configs, get_secrets, print_dwh_endpoint_and_role_arn
 
 
 class AWS:
