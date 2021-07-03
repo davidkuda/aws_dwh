@@ -82,14 +82,16 @@ FROM table_x AS x
 JOIN table_y AS y
 WHERE x.x = y.x;
 
-CREATE TABLE IF NOT EXISTS "staging_song_data" (
-    "artist_id" VARCHAR NOT NULL,
-    "artist_latitude" DECIMAL,
-    "artist_longitude" DECIMAL,
-    "artist_name" VARCHAR,
-    "duration" DECIMAL,
-    "num_songs" INTEGER,
-    "song_id" VARCHAR,
-    "title" VARCHAR,
-    "year" INTEGER
-);
+COPY table
+FROM 's3://udacity-dend/song_data/'
+CREDENTIALS 'aws_iam_role=arn:aws:iam::0123456:role/dwhRole'
+gzip
+DELIMITER ';'
+REGION 'us-west-2';
+
+COPY table
+FROM 's3://udacity-dend/log_data/'
+CREDENTIALS 'aws_iam_role=arn:aws:iam::0123456:role/dwhRole'
+gzip
+DELIMITER ';'
+REGION 'us-west-2';
