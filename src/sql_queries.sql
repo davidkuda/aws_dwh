@@ -1,3 +1,35 @@
+CREATE TABLE IF NOT EXISTS "staging_log_data" (
+    "artist" VARCHAR,
+    "auth" VARCHAR(12) NOT NULL,
+    "firstName" TEXT NOT NULL,
+    "gender" TEXT NOT NULL,
+    "itemInSession" INTEGER NOT NULL,
+    "length" DECIMAL,
+    "level" VARCHAR(12) NOT NULL,
+    "location" VARCHAR NOT NULL,
+    "method" VARCHAR(7) NOT NULL,
+    "page" VARCHAR,
+    "registration" VARCHAR(12),
+    "sessionId" INTEGER NOT NULL,
+    "song" VARCHAR,
+    "status" SMALLINT NOT NULL,
+    "timestamp" BIGINT NOT NULL,
+    "userAgent" VARCHAR NOT NULL,
+    "userId" INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS "staging_song_data" (
+    "artist_id" VARCHAR NOT NULL,
+    "artist_latitude" DECIMAL,
+    "artist_longitude" DECIMAL,
+    "artist_name" VARCHAR,
+    "duration" DECIMAL,
+    "num_songs" INTEGER,
+    "song_id" VARCHAR,
+    "title" VARCHAR,
+    "year" INTEGER
+);
+
 CREATE TABLE IF NOT EXISTS songplays (
 	songplay_id IDENTITY(0,1) PRIMARY KEY NOT NULL SORTKEY DISTKEY,
 	start_time TIMESTAMP NOT NULL REFERENCES time(start_time),
@@ -44,25 +76,11 @@ CREATE TABLE IF NOT EXISTS time (
 	weekday SMALLINT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS "staging_log_data" (
-    "artist" TEXT,
-    "auth" VARCHAR(12) NOT NULL,
-    "firstName" TEXT NOT NULL,
-    "gender" TEXT NOT NULL,
-    "itemInSession" INTEGER NOT NULL,
-    "length" DECIMAL,
-    "level" VARCHAR(12) NOT NULL,
-    "location" TEXT NOT NULL,
-    "method" VARCHAR(7) NOT NULL,
-    "page" TEXT,
-    "registration" VARCHAR(12),
-    "sessionId" INTEGER NOT NULL,
-    "song" TEXT,
-    "status" SMALLINT NOT NULL,
-    "timestamp" BIGINT NOT NULL,
-    "userAgent" TEXT NOT NULL,
-    "userId" INTEGER NOT NULL
-);
+SELECT fact1, fact2
+INTO OtherServer.newFactTable
+FROM table_x AS x
+JOIN table_y AS y
+WHERE x.x = y.x;
 
 CREATE TABLE IF NOT EXISTS "staging_song_data" (
     "artist_id" VARCHAR NOT NULL,
