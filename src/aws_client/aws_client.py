@@ -1,10 +1,12 @@
 import json
+import time
+import datetime
 
 import boto3
 import pandas as pd
 
-# from utils import parse_configs, get_secrets
-from .utils import parse_configs, get_secrets, print_dwh_endpoint_and_role_arn
+from utils import parse_configs, get_secrets
+# from .utils import parse_configs, get_secrets
 
 
 class AWS:
@@ -75,6 +77,18 @@ class AWS:
         df = self.get_redshift_props_as_pd_df(redshift_cluster_props)
         print(df)
 
+    def check_existence_of_redshift_cluster(self):
+        t0 = datetime.datetime.now()
+        redshift_cluster_props = self.get_redshift_cluster_props()
+        while redshift_cluster_props["ClusterStatus"] == 'creating':
+            elapsed_time = datetime.datetime.now() - t0
+            elapsed_time = elapsed_time.seconds
+            print(f'creating redshift cluster -- {elapsed_time} seconds elapsed')
+            time.sleep(5)
+            redshift_cluster_props = self.get_redshift_cluster_props()
+            if redshift_cluster_props["ClusterStatus"] == 'available':
+                print('Created! Cluster is now available.')
+
     @staticmethod
     def get_redshift_props_as_pd_df(redshift_props):
         pd.set_option('display.max_colwidth', None)
@@ -84,7 +98,8 @@ class AWS:
         x = [(k, v) for k, v in redshift_props.items() if k in keys_to_show]
         return pd.DataFrame(data=x, columns=["Key", "Value"])
 
-    def open_tcp_port(self, cluster_props):
+    def open_tcp_port(self):
+        cluster_props = self.get_redshift_cluster_props()
         vpc = self.ec2.Vpc(id=cluster_props['VpcId'])
         default_security_group = list(vpc.security_groups.all())[0]
         default_security_group.authorize_ingress(
@@ -106,12 +121,7 @@ class AWS:
         self.iam.delete_role(RoleName=self.configs['DWH_IAM_ROLE_NAME'])
 
 
-def destroy_infrastructure(aws: AWS):
-    aws.delete_cluster()
-    aws.delete_iam_role()
-
-
-def main():
+def get_aws_instance():
     configs = parse_configs('../../config/dwh.cfg')
     secrets = get_secrets()
 
@@ -120,25 +130,31 @@ def main():
               region=configs.get('REGION'),
               config_params=configs)
 
+    return aws
+
+
+def create_infrastructure(aws: AWS):
     # Create iam role
-    # aws.create_iam_role()
+    aws.create_iam_role()
 
     # Get ARN of that role
-    role_arn = aws.get_iam_role_arn()
+    read_s3_role_arn = aws.get_iam_role_arn()
 
     # Create the Redshift Cluster and wait until available
-    aws.create_redshift_cluster(role_arn)
+    aws.create_redshift_cluster(read_s3_role_arn)
 
     # Check for availability
-    redshift_cluster_props = aws.get_redshift_cluster_props()
-    aws.print_redshift_props(redshift_cluster_props)
-    print_dwh_endpoint_and_role_arn(redshift_cluster_props)
+    aws.check_existence_of_redshift_cluster()
+
 
     # After cluster is available: Open tcp port.
-    # aws.open_tcp_port(redshift_cluster_props)
+    # aws.open_tcp_port()
 
-    # Finally, destroy infrastructure.
-    # destroy_infrastructure(aws)
+    print('Infrastructure created. AWS Redshift is available.')
+
+
+def destroy_infrastructure(aws: AWS):
+
     aws.redshift.delete_cluster(
         ClusterIdentifier=aws.configs['DWH_CLUSTER_IDENTIFIER'],
         SkipFinalClusterSnapshot=True)
@@ -151,4 +167,7 @@ def main():
 
 
 if __name__ == '__main__':
-    print('hello')
+    aws = get_aws_instance()
+    create_infrastructure(aws)
+    # destroy_infrastructure(aws)
+
