@@ -6,7 +6,7 @@ import os
 import boto3
 import pandas as pd
 
-from utils import parse_configs, get_secrets
+from .utils import parse_configs, get_secrets
 
 
 class AWS:
@@ -177,7 +177,4 @@ def destroy_infrastructure(aws: AWS):
 
 
 if __name__ == '__main__':
-    aws = get_aws_instance()
-    # create_infrastructure(aws)
-    # destroy_infrastructure(aws)
-
+    print('Run either "create_infrastructure.py" or "destroy_infrastructure.py"')
