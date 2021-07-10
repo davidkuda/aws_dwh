@@ -5,8 +5,8 @@ import datetime
 import boto3
 import pandas as pd
 
-from utils import parse_configs, get_secrets
-# from .utils import parse_configs, get_secrets
+# from utils import parse_configs, get_secrets
+from .utils import parse_configs, get_secrets
 
 
 class AWS:
@@ -88,6 +88,14 @@ class AWS:
             redshift_cluster_props = self.get_redshift_cluster_props()
             if redshift_cluster_props["ClusterStatus"] == 'available':
                 print('Created! Cluster is now available.')
+
+    def get_dwh_endpoint(self):
+        dwh_endpoint = self.get_redshift_cluster_props()['Endpoint']['Address']
+        return dwh_endpoint
+
+    def get_dwh_role_arn(self):
+        dwh_role_arn = self.get_redshift_cluster_props()['IamRoles'][0]['IamRoleArn']
+        return dwh_role_arn
 
     @staticmethod
     def get_redshift_props_as_pd_df(redshift_props):

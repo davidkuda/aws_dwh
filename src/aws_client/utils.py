@@ -19,13 +19,3 @@ def get_secrets():
     key = os.environ.get('CREDS__AWS_UDACITY__KEY')
     secret = os.environ.get('CREDS__AWS_UDACITY__SECRET')
     return {'KEY': key, 'SECRET': secret}
-
-
-def get_dwh_endpoint(redshift_cluster_props):
-    dwh_endpoint = redshift_cluster_props['Endpoint']['Address']
-    return dwh_endpoint
-
-
-def get_dwh_role_arn(redshift_cluster_props):
-    dwh_role_arn = redshift_cluster_props['IamRoles'][0]['IamRoleArn']
-    return dwh_role_arn
