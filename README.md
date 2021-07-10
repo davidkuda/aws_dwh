@@ -72,16 +72,16 @@ be answered now:
 
 Let's look at the analysis of these questions.
 
-![songplays by hour of day](songplays_by_hour_of_day.png)
+![songplays by hour of day](documentation/data_analysis/songplays_by_hour_of_day.png)
 _Most listeners are active around afternoon to evening._
 
-![Most played artists](most_played_artists.png)
+![Most played artists](documentation/data_analysis/most_played_artists.png)
 _The top three most played artists are: 1 Muse, 2 Radiohead, 3 Coldplay._
 
-![user agents](user_agents.png)
+![user agents](documentation/data_analysis/user_agents.png)
 _Apparently most users listen on MacOS._
 
-![Free and Paid Songplays](free_and_paid_songplays.png)
+![Free and Paid Songplays](documentation/data_analysis/free_and_paid_songplays.png)
 _There are way more paid users listening on Sparkify then free users._
 
 
