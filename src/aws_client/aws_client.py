@@ -1,12 +1,12 @@
 import json
 import time
 import datetime
+import os
 
 import boto3
 import pandas as pd
 
-# from utils import parse_configs, get_secrets
-from .utils import parse_configs, get_secrets
+from utils import parse_configs, get_secrets
 
 
 class AWS:
@@ -130,7 +130,9 @@ class AWS:
 
 
 def get_aws_instance():
-    configs = parse_configs('../../config/dwh.cfg')
+    configs_path = os.path.join(os.path.dirname(__file__),
+                                '../../config/dwh.cfg')
+    configs = parse_configs(configs_path)
     secrets = get_secrets()
 
     aws = AWS(aws_access_key_id=secrets.get('KEY'),
@@ -176,6 +178,6 @@ def destroy_infrastructure(aws: AWS):
 
 if __name__ == '__main__':
     aws = get_aws_instance()
-    create_infrastructure(aws)
+    # create_infrastructure(aws)
     # destroy_infrastructure(aws)
 
